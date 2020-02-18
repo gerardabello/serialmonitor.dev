@@ -3,6 +3,7 @@ import styled, { ThemeProvider } from 'styled-components'
 
 import Input from 'components/input'
 import Button from 'components/button'
+import Spacer from 'components/spacer'
 import Distribute from 'components/distribute'
 import Text from 'components/text'
 import Switch from 'components/switch'
@@ -139,18 +140,18 @@ const App = () => {
           </Distribute>
         </Header>
         <SendBar>
-          <Distribute space={1}>
-            <Input
-              value={sendData}
-              onChange={e => setSendData(e.target.value)}
-            />
-            <Button
-              type="level1"
-              onClick={handleSendDataClicked}
-              disabled={!isSerialConnected}>
-              Send
-            </Button>
-          </Distribute>
+          <Input
+            fullWidth
+            value={sendData}
+            onChange={e => setSendData(e.target.value)}
+          />
+          <Spacer left={1} />
+          <Button
+            type="level1"
+            onClick={handleSendDataClicked}
+            disabled={!isSerialConnected}>
+            Send
+          </Button>
         </SendBar>
         <SideBar />
         <OutputWrapper>
