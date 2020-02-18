@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react'
 import styled, { ThemeProvider } from 'styled-components'
 
+import Modal from 'components/modal'
 import Input from 'components/input'
 import Button from 'components/button'
 import Spacer from 'components/spacer'
@@ -123,11 +124,6 @@ const App = () => {
       <Root>
         <Header>
           <Distribute space={1} align="center">
-            {!isSerialConnected && (
-              <Button type="level0" onClick={handleClick}>
-                Connect
-              </Button>
-            )}
             {isSerialConnected && <Text>Connected to</Text>}
             {isSerialConnected && (
               <Button
@@ -157,6 +153,12 @@ const App = () => {
         <OutputWrapper>
           <Output data={serialOutputString} />
         </OutputWrapper>
+
+        <Modal isOpen={!isSerialConnected}>
+          <Button type="level0" onClick={handleClick}>
+            Connect
+          </Button>
+        </Modal>
       </Root>
     </ThemeProvider>
   )
