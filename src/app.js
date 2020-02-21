@@ -10,7 +10,8 @@ import Text from 'components/text'
 import Switch from 'components/switch'
 import { contrast } from 'components/utils'
 
-import { connect } from './serial'
+// import { connect } from './serial'
+import { connectMock as connect } from './serial'
 
 import Output from './output'
 
@@ -25,11 +26,10 @@ const Root = styled.div`
 
   display: grid;
 
-  grid-template-rows: 48px 56px 1fr;
+  grid-template-rows: 56px 1fr;
   grid-template-columns: 300px 1fr;
   grid-template-areas:
-    'header header'
-    'sidebar sendbar'
+    'header sendbar'
     'sidebar output';
 `
 
@@ -42,7 +42,7 @@ const OutputWrapper = styled.div`
 const Header = styled.div`
   height: 100%;
   grid-area: header;
-  background: ${props => contrast(props.theme.backgroundColor, 0.05)};
+  background: ${props => contrast(props.theme.backgroundColor, 0.1)};
   display: flex;
   align-items: center;
   padding: 0 12px;
@@ -82,13 +82,13 @@ const standardBaudRates = [
 
 const App = () => {
   const serial = useRef()
-  const [serialOutputString, setSerialOutputString] = useState('')
+  const [serialOutput, setSerialOutput] = useState([])
   const [isSerialConnected, setIsSerialConnected] = useState(false)
   const [isDarkTheme, setIsDarkTheme] = useState(true)
   const [sendData, setSendData] = useState('')
 
   const handleNewData = data => {
-    setSerialOutputString(s => s + data)
+    setSerialOutput(s => [...s, data])
   }
 
   const handleClick = async () => {
@@ -125,13 +125,6 @@ const App = () => {
         <Header>
           <Distribute space={1} align="center">
             {isSerialConnected && <Text>Connected to</Text>}
-            {isSerialConnected && (
-              <Button
-                type="level2"
-                onClick={() => console.log('Not implemented')}>
-                Disconnect
-              </Button>
-            )}
             <Switch checked={isDarkTheme} onChange={v => setIsDarkTheme(v)} />
           </Distribute>
         </Header>
@@ -151,7 +144,9 @@ const App = () => {
         </SendBar>
         <SideBar />
         <OutputWrapper>
-          <Output data={serialOutputString} />
+          <Output
+            data={serialOutput.map(i => String.fromCharCode(i)).join('')}
+          />
         </OutputWrapper>
 
         <Modal isOpen={!isSerialConnected}>

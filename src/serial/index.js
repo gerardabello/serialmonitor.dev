@@ -8,9 +8,7 @@ class Serial {
       }
     })
 
-    this.port.readable
-      .pipeThrough(new window.TextDecoderStream())
-      .pipeTo(appendStream)
+    this.port.readable.pipeTo(appendStream)
   }
 
   onData(data) {
@@ -56,4 +54,22 @@ export const connect = async baudrate => {
   window.serialPort = port
 
   return new Serial(port)
+}
+
+export const connectMock = async () => {
+  return new Serial({
+    readable: new ReadableStream({
+      start(controller) {
+        setInterval(() => {
+          controller.enqueue(Math.round(Math.random() * 255))
+        }, 10)
+      }
+    }),
+    writable: {
+      getWriter: () => ({
+        write: data => console.log(`Data sent to serial:`, data),
+        releaseLock: () => {}
+      })
+    }
+  })
 }

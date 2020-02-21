@@ -10,6 +10,21 @@ const Root = styled.div`
 
 const Pre = styled.pre`
   margin: 0;
+  white-space: pre-wrap;
+  word-break: break-all;
+  font-size: 14px;
+`
+
+const Line = styled.div`
+  display: flex;
+`
+
+const LineNumber = styled.span`
+  min-width: 26px;
+  margin-right: 8px;
+  margin-top: 1px;
+  font-weight: bold;
+  font-size: 14px;
 `
 
 const Output = ({ data }) => {
@@ -45,7 +60,12 @@ const Output = ({ data }) => {
 
   return (
     <Root ref={ref} onScroll={handleScroll}>
-      <Pre>{data}</Pre>
+      {data.split('\n').map((line, i) => (
+        <Line key={i}>
+          <LineNumber>{i}</LineNumber>
+          <Pre>{line}</Pre>
+        </Line>
+      ))}
     </Root>
   )
 }
