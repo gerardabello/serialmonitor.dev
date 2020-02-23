@@ -3,7 +3,9 @@ import styled, { ThemeProvider } from 'styled-components'
 
 import Input from 'components/input'
 import Button from 'components/button'
+import Text from 'components/text'
 import Spacer from 'components/spacer'
+import Spread from 'components/spread'
 import Distribute from 'components/distribute'
 import Switch from 'components/switch'
 import { Select, Option } from 'components/select'
@@ -63,6 +65,15 @@ const SideBar = styled.div`
   height: 100%;
   grid-area: sidebar;
   background: ${props => contrast(props.theme.backgroundColor, 0.15)};
+  position: relative;
+`
+const SideBarFooter = styled.div`
+  background: ${props => contrast(props.theme.backgroundColor, 0.1)};
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 12px 16px;
 `
 
 const standardBaudRates = [
@@ -165,7 +176,7 @@ const App = () => {
           </Select>
           <Spacer left={1} />
           <Button
-            type="level1"
+            type="level0"
             onClick={handleSendDataClicked}
             disabled={!isSerialConnected}>
             Send
@@ -174,15 +185,25 @@ const App = () => {
         <SideBar>
           <Spacer top={2} bottom={2} left={2} right={2}>
             <Distribute vertical space={2}>
-              <Select
-                value={outputDataType}
-                onChange={e => setOutputDataType(e.target.value)}>
-                <Option value="text">TEXT</Option>
-                <Option value="hex">HEX</Option>
-              </Select>
-
-              <Switch checked={isDarkTheme} onChange={v => setIsDarkTheme(v)} />
+              <Distribute vertical space={1}>
+                <Text>Output format:</Text>
+                <Select
+                  value={outputDataType}
+                  onChange={e => setOutputDataType(e.target.value)}>
+                  <Option value="text">TEXT</Option>
+                  <Option value="hex">HEX</Option>
+                </Select>
+              </Distribute>
             </Distribute>
+            <SideBarFooter>
+              <Spread align="center">
+                <Text>Dark theme:</Text>
+                <Switch
+                  checked={isDarkTheme}
+                  onChange={v => setIsDarkTheme(v)}
+                />
+              </Spread>
+            </SideBarFooter>
           </Spacer>
         </SideBar>
         <OutputWrapper>

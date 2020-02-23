@@ -2,6 +2,8 @@ import React, { useState } from 'react'
 
 import Modal from 'components/modal'
 import Button from 'components/button'
+import Spacer from 'components/spacer'
+import Text from 'components/text'
 import Distribute from 'components/distribute'
 import { Select, Option } from 'components/select'
 
@@ -32,16 +34,20 @@ const ConnectModal = ({ isOpen, onConnect }) => {
   return (
     <Modal isOpen={isOpen}>
       <Distribute vertical space={2}>
-        <Select
-          fullWidth
-          value={baudRate}
-          onChange={e => setBaudRate(e.target.value)}>
-          {standardBaudRates.map(br => (
-            <Option key={br} value={br}>
-              {br}
-            </Option>
-          ))}
-        </Select>
+        <Distribute vertical space={1}>
+          <Text>Baud rate:</Text>
+          <Select
+            fullWidth
+            value={baudRate}
+            onChange={e => setBaudRate(e.target.value)}>
+            {standardBaudRates.map(br => (
+              <Option key={br} value={br}>
+                {br}
+              </Option>
+            ))}
+          </Select>
+        </Distribute>
+        <Spacer left={30} />
         <Button type="level0" onClick={handleClick}>
           Connect
         </Button>
