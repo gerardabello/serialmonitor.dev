@@ -13,6 +13,7 @@ import { contrast } from 'components/utils'
 import { connectMock as connect } from './serial'
 
 import TextOutput from './text-output'
+import HexOutput from './hex-output'
 import ConnectModal from './connect-modal'
 
 const Root = styled.div`
@@ -27,7 +28,7 @@ const Root = styled.div`
   display: grid;
 
   grid-template-rows: 56px 1fr;
-  grid-template-columns: 0px 1fr;
+  grid-template-columns: 240px 1fr;
   grid-template-areas:
     'header sendbar'
     'sidebar output';
@@ -45,7 +46,8 @@ const Header = styled.div`
   background: ${props => contrast(props.theme.backgroundColor, 0.1)};
   display: flex;
   align-items: center;
-  padding: 0 12px;
+  justify-content: center;
+  font-weight: bold;
 `
 
 const SendBar = styled.div`
@@ -87,6 +89,9 @@ const App = () => {
   const [isDarkTheme, setIsDarkTheme] = useState(true)
   const [sendData, setSendData] = useState('')
   const [sendDataType, setSendDataType] = useState('text')
+  const [outputDataType, setOutputDataType] = useState('text')
+
+  const Output = outputDataType === 'text' ? TextOutput : HexOutput
 
   const handleNewData = data => {
     setSerialOutput(s => [...s, ...data])
@@ -110,6 +115,11 @@ const App = () => {
 
       case 'decimal': {
         bytes = new Uint8Array(sendData.split(',').map(s => parseInt(s, 10)))
+        break
+      }
+
+      case 'hex': {
+        bytes = new Uint8Array(sendData.split(',').map(s => parseInt(s, 16)))
         break
       }
     }
@@ -138,13 +148,7 @@ const App = () => {
             }
       }>
       <Root>
-        {/*
-        <Header>
-          <Distribute space={1} align="center">
-            <Switch checked={isDarkTheme} onChange={v => setIsDarkTheme(v)} />
-          </Distribute>
-        </Header>
-        */}
+        <Header>serialmonitor.dev</Header>
         <SendBar>
           <Input
             fullWidth
@@ -156,6 +160,7 @@ const App = () => {
             value={sendDataType}
             onChange={e => setSendDataType(e.target.value)}>
             <Option value="text">TEXT</Option>
+            <Option value="hex">HEX</Option>
             <Option value="decimal">DECIMAL</Option>
           </Select>
           <Spacer left={1} />
@@ -166,18 +171,22 @@ const App = () => {
             Send
           </Button>
         </SendBar>
-        {/*
         <SideBar>
           <Spacer top={2} bottom={2} left={2} right={2}>
-            <Select>
-              <Option value="text">TEXT</Option>
-              <Option value="hex">HEX</Option>
-            </Select>
+            <Distribute vertical space={2}>
+              <Select
+                value={outputDataType}
+                onChange={e => setOutputDataType(e.target.value)}>
+                <Option value="text">TEXT</Option>
+                <Option value="hex">HEX</Option>
+              </Select>
+
+              <Switch checked={isDarkTheme} onChange={v => setIsDarkTheme(v)} />
+            </Distribute>
           </Spacer>
         </SideBar>
-        */}
         <OutputWrapper>
-          <TextOutput data={serialOutput} />
+          <Output data={serialOutput} />
         </OutputWrapper>
         <ConnectModal isOpen={!isSerialConnected} onConnect={handleOnConnect} />
       </Root>
