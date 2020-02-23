@@ -12,8 +12,8 @@ class Serial {
   }
 
   onData(data) {
-    if (this.addOnDataListener) {
-      this.onDataListener(data)
+    if (this.onDataListener) {
+      this.onDataListener(Array.from(data))
     }
   }
 
@@ -21,22 +21,7 @@ class Serial {
     this.onDataListener = onDataListener
   }
 
-  sendData(data) {
-    let bytes
-
-    switch (typeof data) {
-      case 'string': {
-        var enc = new TextEncoder()
-        bytes = enc.encode(data)
-        break
-      }
-
-      case 'number': {
-        bytes = new Uint8Array([data])
-        break
-      }
-    }
-
+  sendData(bytes) {
     const writer = this.port.writable.getWriter()
 
     writer.write(bytes)
@@ -61,7 +46,7 @@ export const connectMock = async () => {
     readable: new ReadableStream({
       start(controller) {
         setInterval(() => {
-          controller.enqueue(Math.round(Math.random() * 255))
+          controller.enqueue([Math.round(Math.random() * 255)])
         }, 10)
       }
     }),

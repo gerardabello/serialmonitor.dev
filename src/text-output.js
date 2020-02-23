@@ -25,9 +25,11 @@ const LineNumber = styled.span`
   margin-top: 1px;
   font-weight: bold;
   font-size: 14px;
+  opacity: 0.2;
 `
 
-const Output = ({ data }) => {
+const TextOutput = ({ data }) => {
+  const textData = data.map(i => String.fromCharCode(i)).join('')
   const ref = useRef()
   const timeoutRef = useRef()
   const [stickToBottom, setStickToBottom] = useState(true)
@@ -37,7 +39,7 @@ const Output = ({ data }) => {
       const element = ref.current
       element.scrollTop = element.scrollHeight - element.clientHeight
     }
-  }, [data])
+  }, [textData])
 
   const handleScroll = () => {
     const MARGIN = 30
@@ -60,7 +62,7 @@ const Output = ({ data }) => {
 
   return (
     <Root ref={ref} onScroll={handleScroll}>
-      {data.split('\n').map((line, i) => (
+      {textData.split('\n').map((line, i) => (
         <Line key={i}>
           <LineNumber>{i}</LineNumber>
           <Pre>{line}</Pre>
@@ -70,4 +72,4 @@ const Output = ({ data }) => {
   )
 }
 
-export default Output
+export default TextOutput

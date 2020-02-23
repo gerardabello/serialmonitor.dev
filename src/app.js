@@ -1,19 +1,19 @@
 import React, { useState, useRef } from 'react'
 import styled, { ThemeProvider } from 'styled-components'
 
-import Modal from 'components/modal'
 import Input from 'components/input'
 import Button from 'components/button'
 import Spacer from 'components/spacer'
 import Distribute from 'components/distribute'
-import Text from 'components/text'
 import Switch from 'components/switch'
+import { Select, Option } from 'components/select'
 import { contrast } from 'components/utils'
 
-// import { connect } from './serial'
-import { connectMock as connect } from './serial'
+import { connect } from './serial'
+// import { connectMock as connect } from './serial'
 
-import Output from './output'
+import TextOutput from './text-output'
+import ConnectModal from './connect-modal'
 
 const Root = styled.div`
   background: ${props => props.theme.backgroundColor};
@@ -27,7 +27,7 @@ const Root = styled.div`
   display: grid;
 
   grid-template-rows: 56px 1fr;
-  grid-template-columns: 300px 1fr;
+  grid-template-columns: 0px 1fr;
   grid-template-areas:
     'header sendbar'
     'sidebar output';
@@ -86,19 +86,35 @@ const App = () => {
   const [isSerialConnected, setIsSerialConnected] = useState(false)
   const [isDarkTheme, setIsDarkTheme] = useState(true)
   const [sendData, setSendData] = useState('')
+  const [sendDataType, setSendDataType] = useState('text')
 
   const handleNewData = data => {
-    setSerialOutput(s => [...s, data])
+    setSerialOutput(s => [...s, ...data])
   }
 
-  const handleClick = async () => {
-    serial.current = await connect(9600)
+  const handleOnConnect = async baudRate => {
+    serial.current = await connect(baudRate)
     serial.current.addOnDataListener(handleNewData)
     setIsSerialConnected(true)
   }
 
   const handleSendDataClicked = () => {
-    serial.current.sendData(sendData)
+    let bytes
+
+    switch (sendDataType) {
+      case 'text': {
+        var enc = new TextEncoder()
+        bytes = enc.encode(sendData)
+        break
+      }
+
+      case 'decimal': {
+        bytes = new Uint8Array(sendData.split(',').map(s => parseInt(s, 10)))
+        break
+      }
+    }
+
+    serial.current.sendData(bytes)
     setSendData('')
   }
 
@@ -122,18 +138,26 @@ const App = () => {
             }
       }>
       <Root>
+        {/*
         <Header>
           <Distribute space={1} align="center">
-            {isSerialConnected && <Text>Connected to</Text>}
             <Switch checked={isDarkTheme} onChange={v => setIsDarkTheme(v)} />
           </Distribute>
         </Header>
+        */}
         <SendBar>
           <Input
             fullWidth
             value={sendData}
             onChange={e => setSendData(e.target.value)}
           />
+          <Spacer left={1} />
+          <Select
+            value={sendDataType}
+            onChange={e => setSendDataType(e.target.value)}>
+            <Option value="text">TEXT</Option>
+            <Option value="decimal">DECIMAL</Option>
+          </Select>
           <Spacer left={1} />
           <Button
             type="level1"
@@ -142,18 +166,20 @@ const App = () => {
             Send
           </Button>
         </SendBar>
-        <SideBar />
+        {/*
+        <SideBar>
+          <Spacer top={2} bottom={2} left={2} right={2}>
+            <Select>
+              <Option value="text">TEXT</Option>
+              <Option value="hex">HEX</Option>
+            </Select>
+          </Spacer>
+        </SideBar>
+        */}
         <OutputWrapper>
-          <Output
-            data={serialOutput.map(i => String.fromCharCode(i)).join('')}
-          />
+          <TextOutput data={serialOutput} />
         </OutputWrapper>
-
-        <Modal isOpen={!isSerialConnected}>
-          <Button type="level0" onClick={handleClick}>
-            Connect
-          </Button>
-        </Modal>
+        <ConnectModal isOpen={!isSerialConnected} onConnect={handleOnConnect} />
       </Root>
     </ThemeProvider>
   )
