@@ -63,9 +63,9 @@ const HexOutput = ({ data }) => {
             {go16.map(val => decimalToHex(val, 2).toUpperCase()).join(' ')}
           </Hex>
           <TextWrapper>
-            {go16.map((val, i) => (
-              <Text key={i}>{String.fromCharCode(val)}</Text>
-            ))}
+            {go16.map(val =>
+              val >= 33 && val <= 126 ? String.fromCharCode(val) : '.'
+            )}
           </TextWrapper>
         </Line>
       ))}
