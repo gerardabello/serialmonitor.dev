@@ -31,27 +31,36 @@ const ConnectModal = ({ isOpen, onConnect }) => {
     onConnect(baudRate)
   }
 
+  const isSerialSupported = 'serial' in navigator
+
   return (
     <Modal isOpen={isOpen}>
-      <Distribute vertical space={2}>
-        <Distribute vertical space={1}>
-          <Text>Baud rate:</Text>
-          <Select
-            fullWidth
-            value={baudRate}
-            onChange={e => setBaudRate(e.target.value)}>
-            {standardBaudRates.map(br => (
-              <Option key={br} value={br}>
-                {br}
-              </Option>
-            ))}
-          </Select>
+      {isSerialSupported ? (
+        <Distribute vertical space={2}>
+          <Distribute vertical space={1}>
+            <Text>Baud rate:</Text>
+            <Select
+              fullWidth
+              value={baudRate}
+              onChange={e => setBaudRate(e.target.value)}>
+              {standardBaudRates.map(br => (
+                <Option key={br} value={br}>
+                  {br}
+                </Option>
+              ))}
+            </Select>
+          </Distribute>
+          <Spacer left={30} />
+          <Button type="level0" onClick={handleClick}>
+            Connect
+          </Button>
         </Distribute>
-        <Spacer left={30} />
-        <Button type="level0" onClick={handleClick}>
-          Connect
-        </Button>
-      </Distribute>
+      ) : (
+        <Distribute vertical space={2} align="center">
+          <Text>Sorry! Your browser does not support the web serial API.</Text>
+          <Text>At the moment it is only supported in Chrome.</Text>
+        </Distribute>
+      )}
     </Modal>
   )
 }
