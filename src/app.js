@@ -9,8 +9,8 @@ import Switch from 'components/switch'
 import { Select, Option } from 'components/select'
 import { contrast } from 'components/utils'
 
-import { connect } from './serial'
-// import { connectMock as connect } from './serial'
+// import { connect } from './serial'
+import { connectMock as connect } from './serial'
 
 import TextOutput from './text-output'
 import ConnectModal from './connect-modal'
