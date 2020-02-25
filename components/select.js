@@ -10,7 +10,7 @@ export const Select = styled.select`
   color: ${props => contrast(props.textColor || props.theme.textColor)};
 
   line-height: 1.1;
-  padding: 8px 24px;
+  padding: 8px 12px;
   ${props => props.fullWidth && `width: 100%;`}
   max-width: 100%;
   margin: 0;
