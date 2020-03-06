@@ -9,14 +9,16 @@ const Root = styled.div`
 `
 
 const StickScroller = ({ children }) => {
-  const ref = useRef()
-  const timeoutRef = useRef()
+  const ref = useRef(null)
+  const timeoutRef = useRef<number>()
   const [stickToBottom, setStickToBottom] = useState(true)
 
   useEffect(() => {
     if (stickToBottom) {
       const element = ref.current
-      element.scrollTop = element.scrollHeight - element.clientHeight
+      if (element !== null) {
+        element.scrollTop = element.scrollHeight - element.clientHeight
+      }
     }
   })
 
@@ -25,12 +27,14 @@ const StickScroller = ({ children }) => {
 
     const element = ref.current
 
-    const closeToBottom =
-      element.scrollTop + element.clientHeight > element.scrollHeight - MARGIN
+    // In case we don't have the element (for whatever reason) we stivk to bottom
+    const closeToBottom = element
+      ? element.scrollTop + element.clientHeight > element.scrollHeight - MARGIN
+      : true
 
     if (closeToBottom) {
       clearTimeout(timeoutRef.current)
-      timeoutRef.current = setTimeout(() => setStickToBottom(true), 100)
+      timeoutRef.current = window.setTimeout(() => setStickToBottom(true), 100)
     } else {
       clearTimeout(timeoutRef.current)
       if (setStickToBottom) {

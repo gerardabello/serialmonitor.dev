@@ -11,7 +11,7 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.jsx?$/,
+        test: /\.(ts|js)x?$/,
         exclude: /(node_modules)/,
         use: {
           loader: 'babel-loader'
@@ -29,6 +29,7 @@ module.exports = {
     ]
   },
   resolve: {
+    extensions: ['.ts', '.tsx', '.js', '.json'],
     alias: {
       components: path.resolve('./components'),
       src: path.resolve('./src')

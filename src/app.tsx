@@ -11,7 +11,7 @@ import Switch from 'components/switch'
 import { Select, Option } from 'components/select'
 import { contrast } from 'components/utils'
 
-import { connect } from './serial'
+import { connect, Serial } from './serial'
 // import { connectMock as connect } from './serial'
 
 import TextOutput from './text-output'
@@ -76,25 +76,8 @@ const SideBarFooter = styled.div`
   padding: 12px 16px;
 `
 
-const standardBaudRates = [
-  110,
-  300,
-  600,
-  1200,
-  2400,
-  4800,
-  9600,
-  14400,
-  19200,
-  38400,
-  57600,
-  115200,
-  128000,
-  256000
-]
-
 const App = () => {
-  const serial = useRef()
+  const serial = useRef<Serial>()
   const [serialOutput, setSerialOutput] = useState([])
   const [isSerialConnected, setIsSerialConnected] = useState(false)
   const [isDarkTheme, setIsDarkTheme] = useState(true)

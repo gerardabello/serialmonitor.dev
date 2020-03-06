@@ -14,13 +14,6 @@ const TextWrapper = styled.div`
   display: flex;
 `
 
-const Text = styled.pre`
-  margin: 0;
-  white-space: pre-wrap;
-  word-break: break-all;
-  font-size: 14px;
-`
-
 const Line = styled.div`
   display: flex;
   height: 24px;

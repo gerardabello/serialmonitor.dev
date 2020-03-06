@@ -1,4 +1,7 @@
-class Serial {
+export class Serial {
+  port: any
+  onDataListener: any
+
   constructor(port) {
     this.port = port
 
@@ -30,13 +33,9 @@ class Serial {
 }
 
 export const connect = async baudrate => {
+  // @ts-ignore
   const port = await navigator.serial.requestPort({})
   await port.open({ baudrate })
-
-  // DEBUG
-  navigator.serial.ondisconnect = console.warn
-  navigator.serial.onconnect = console.warn
-  window.serialPort = port
 
   return new Serial(port)
 }
