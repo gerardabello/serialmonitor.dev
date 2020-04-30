@@ -1,14 +1,20 @@
 import React, { useContext, Component } from 'react'
-import { screenSizes } from '../variables'
 
 const INITIAL_SIZE_CONTEXT = {
   width: 600,
-  breakpoint: 'md'
+  breakpoint: 'md',
+}
+
+const screenSizes = {
+  sm: 425,
+  md: 768,
 }
 
 const Context = React.createContext(INITIAL_SIZE_CONTEXT)
 
-const widthToBreakpoint = width => {
+export type Breakpoint = 'sm' | 'md' | 'lg'
+
+const widthToBreakpoint = (width: number): Breakpoint => {
   if (width <= screenSizes.sm) {
     return 'sm'
   }
@@ -40,8 +46,9 @@ class ResponsiveProvider extends Component {
       <Context.Provider
         value={{
           width,
-          breakpoint: widthToBreakpoint(width)
-        }}>
+          breakpoint: widthToBreakpoint(width),
+        }}
+      >
         {children}
       </Context.Provider>
     )

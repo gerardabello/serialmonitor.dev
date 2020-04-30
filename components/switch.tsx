@@ -2,15 +2,26 @@ import React from 'react'
 import Switch from 'react-switch'
 import { withTheme } from 'styled-components'
 
+import { Theme } from './theme-provider'
+
 const HEIGHT = 28
 
-const CustomSwitch = ({
+type PropsType = {
+  checked: boolean;
+  dataQa?: string;
+  onChange: (checked: boolean) => void;
+  checkedIcon?: JSX.Element;
+  uncheckedIcon?: JSX.Element;
+  theme: Theme;
+}
+
+const CustomSwitch: React.FunctionComponent<PropsType> = ({
   checked,
   dataQa,
   onChange,
   checkedIcon,
   uncheckedIcon,
-  theme
+  theme,
 }) => (
   <div data-qa={dataQa} style={{ height: `${HEIGHT}px` }}>
     <Switch
