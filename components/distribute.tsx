@@ -1,13 +1,20 @@
 import styled from 'styled-components'
-import PropTypes from 'prop-types'
 
 const ALIGN = {
   start: 'flex-start',
   center: 'center',
-  end: 'flex-end'
+  end: 'flex-end',
 }
 
-const Distribute = styled.div`
+type PropsType = {
+  align?: 'start' | 'center' | 'end';
+  position?: 'start' | 'center' | 'end';
+  space?: number;
+  vertical?: boolean;
+  flipped?: boolean;
+}
+
+const Distribute = styled.div<PropsType>`
   display: flex;
   ${props => (props.align ? `align-items: ${ALIGN[props.align]}` : '')};
   ${props =>
@@ -19,22 +26,14 @@ const Distribute = styled.div`
     &:not(:last-child) {
       ${props =>
         props.vertical
-          ? 'margin-bottom:' + props.space * 8 + 'px'
-          : 'margin-right:' + props.space * 8 + 'px'};
+          ? 'margin-bottom:' + (props.space || 0) * 8 + 'px'
+          : 'margin-right:' + (props.space || 0) * 8 + 'px'};
     }
   }
 
   ${props => (props.vertical ? 'flex-direction: column' : '')};
   ${props => (props.flipped ? 'flex-direction: row-reverse' : '')};
 `
-
-Distribute.propTypes = {
-  align: PropTypes.oneOf(['start', 'center', 'end']),
-  position: PropTypes.oneOf(['start', 'center', 'end']),
-  vertical: PropTypes.bool,
-  flipped: PropTypes.bool,
-  space: PropTypes.number
-}
 
 Distribute.displayName = 'Distribute'
 

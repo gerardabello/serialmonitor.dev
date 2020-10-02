@@ -1,7 +1,14 @@
-import PropTypes from 'prop-types'
 import styled from 'styled-components'
 
-const Spacer = styled.div`
+type PropsType = {
+  top?: number
+  left?: number
+  right?: number
+  bottom?: number
+  inner?: boolean
+}
+
+const Spacer = styled.div<PropsType>`
   ${props =>
     !props.inner && props.top ? 'margin-top: ' + props.top * 8 + 'px' : ''};
   ${props =>
@@ -27,27 +34,8 @@ const Spacer = styled.div`
       : ''};
   ${props =>
     props.inner && props.left ? 'padding-left: ' + props.left * 8 + 'px' : ''};
-
-  ${props => (props.inline ? 'display: inline-block' : '')};
 `
 
 Spacer.displayName = 'Spacer'
-
-Spacer.propTypes = {
-  top: PropTypes.number,
-  right: PropTypes.number,
-  bottom: PropTypes.number,
-  left: PropTypes.number,
-  inline: PropTypes.bool,
-  inner: PropTypes.bool
-}
-
-Spacer.defaultProps = {
-  top: 0,
-  right: 0,
-  bottom: 0,
-  left: 0,
-  inline: false
-}
 
 export default Spacer

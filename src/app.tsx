@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react'
-import styled, { ThemeProvider } from 'styled-components'
+import styled from 'styled-components'
 
 import Input from 'components/input'
 import Button from 'components/button'
@@ -8,10 +8,11 @@ import Spacer from 'components/spacer'
 import Spread from 'components/spread'
 import Distribute from 'components/distribute'
 import Switch from 'components/switch'
+import ThemeProvider from 'components/theme-provider'
 import { Select, Option } from 'components/select'
 import { contrast } from 'components/utils'
 
-import { connect } from './serial'
+import { connect, Serial } from './serial'
 // import { connectMock as connect } from './serial'
 
 import TextOutput from './text-output'
@@ -76,26 +77,9 @@ const SideBarFooter = styled.div`
   padding: 12px 16px;
 `
 
-const standardBaudRates = [
-  110,
-  300,
-  600,
-  1200,
-  2400,
-  4800,
-  9600,
-  14400,
-  19200,
-  38400,
-  57600,
-  115200,
-  128000,
-  256000
-]
-
 const App = () => {
-  const serial = useRef()
-  const [serialOutput, setSerialOutput] = useState([])
+  const serial = useRef<Serial | null>(null)
+  const [serialOutput, setSerialOutput] = useState<Array<number>>([])
   const [isSerialConnected, setIsSerialConnected] = useState(false)
   const [isDarkTheme, setIsDarkTheme] = useState(true)
   const [sendData, setSendData] = useState('')
@@ -104,22 +88,22 @@ const App = () => {
 
   const Output = outputDataType === 'text' ? TextOutput : HexOutput
 
-  const handleNewData = data => {
+  const handleNewData = (data: Array<number>): void => {
     setSerialOutput(s => [...s, ...data])
   }
 
-  const handleOnConnect = async baudRate => {
+  const handleOnConnect = async (baudRate: number): Promise<void> => {
     serial.current = await connect(baudRate)
     serial.current.addOnDataListener(handleNewData)
     setIsSerialConnected(true)
   }
 
-  const handleSendDataClicked = () => {
+  const handleSendDataClicked = (): void => {
     let bytes
 
     switch (sendDataType) {
       case 'text': {
-        var enc = new TextEncoder()
+        const enc = new TextEncoder()
         bytes = enc.encode(sendData)
         break
       }
@@ -133,52 +117,62 @@ const App = () => {
         bytes = new Uint8Array(sendData.split(',').map(s => parseInt(s, 16)))
         break
       }
+
+      default:
+        throw new Error('Unknown send data type')
     }
 
-    serial.current.sendData(bytes)
-    setSendData('')
+    if (serial.current !== null) {
+      serial.current.sendData(bytes)
+      setSendData('')
+    }
   }
 
   return (
     <ThemeProvider
-      theme={
-        isDarkTheme
-          ? {
-              backgroundColor: '#111111',
-              textColor: '#f3f3f3',
-              highlightColor: '#0551c3',
-              lightColor: '#a9a9a9',
-              focusColor: '#d4bc13'
-            }
-          : {
-              backgroundColor: '#f3f3f3',
-              textColor: '#222222',
-              highlightColor: '#4534a7',
-              lightColor: '#484848',
-              focusColor: '#de6b08'
-            }
-      }>
+      {...(isDarkTheme
+        ? {
+            backgroundColor: '#111111',
+            textColor: '#f3f3f3',
+            highlightColor: '#0551c3',
+            lightColor: '#a9a9a9',
+            focusColor: '#d4bc13',
+          }
+        : {
+            backgroundColor: '#f3f3f3',
+            textColor: '#222222',
+            highlightColor: '#4534a7',
+            lightColor: '#484848',
+            focusColor: '#de6b08',
+          })}
+    >
       <Root>
         <Header>serialmonitor.dev</Header>
         <SendBar>
           <Input
             fullWidth
             value={sendData}
-            onChange={e => setSendData(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>): void =>
+              setSendData(e.target.value)
+            }
           />
           <Spacer left={1} />
           <Select
             value={sendDataType}
-            onChange={e => setSendDataType(e.target.value)}>
+            onChange={(e: React.ChangeEvent<HTMLSelectElement>): void =>
+              setSendDataType(e.target.value)
+            }
+          >
             <Option value="text">TEXT</Option>
             <Option value="hex">HEX</Option>
             <Option value="decimal">DECIMAL</Option>
           </Select>
           <Spacer left={1} />
           <Button
-            type="level0"
+            kind="level0"
             onClick={handleSendDataClicked}
-            disabled={!isSerialConnected}>
+            disabled={!isSerialConnected}
+          >
             Send
           </Button>
         </SendBar>
@@ -189,7 +183,8 @@ const App = () => {
                 <Text>Output format:</Text>
                 <Select
                   value={outputDataType}
-                  onChange={e => setOutputDataType(e.target.value)}>
+                  onChange={e => setOutputDataType(e.target.value)}
+                >
                   <Option value="text">TEXT</Option>
                   <Option value="hex">HEX</Option>
                 </Select>

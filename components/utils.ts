@@ -1,5 +1,9 @@
 import Color from 'color'
 
+export const noop = (): void => {
+  /*noop*/
+}
+
 Color.prototype.tint = function(ratio) {
   return this.mix(Color('white'), ratio)
 }
@@ -24,9 +28,9 @@ export const colorGenerator = ({
   black = 0,
   fade = 0,
   tint = 0,
-  shade = 0
+  shade = 0,
 } = {}) => color => {
-  if (!color) return null
+  if (!color) {return null}
   return Color(color)
     .darken(dark)
     .lighten(light)
@@ -39,8 +43,8 @@ export const colorGenerator = ({
 }
 
 export const mix = (color1, color2, ratio) => {
-  if (!color1) return null
-  if (!color2) return null
+  if (!color1) {return null}
+  if (!color2) {return null}
   return Color(color1)
     .mix(Color(color2), ratio)
     .rgb()
@@ -48,7 +52,7 @@ export const mix = (color1, color2, ratio) => {
 }
 
 export const shadeToColor = (color, shade) => {
-  if (!color) return null
+  if (!color) {return null}
   return Color(color)
     .shade(shade)
     .rgb()
@@ -56,7 +60,7 @@ export const shadeToColor = (color, shade) => {
 }
 
 export const tintToColor = (color, tint) => {
-  if (!color) return null
+  if (!color) {return null}
   return Color(color)
     .tint(tint)
     .rgb()
@@ -64,7 +68,7 @@ export const tintToColor = (color, tint) => {
 }
 
 export const alphaToColor = (color, alpha) => {
-  if (!color) return null
+  if (!color) {return null}
   return Color(color)
     .alpha(alpha)
     .rgb()
@@ -99,7 +103,7 @@ export const contrast = (
   contrastDarkSaturate = 1,
   contrastLight = 0.9
 ) => {
-  if (!color) return null
+  if (!color) {return null}
   const c = Color(color)
   return c.luminosity() > contrastLuminance
     ? c

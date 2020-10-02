@@ -51,7 +51,7 @@ const ConnectModal = ({ isOpen, onConnect }) => {
             </Select>
           </Distribute>
           <Spacer left={30} />
-          <Button type="level0" onClick={handleClick}>
+          <Button kind="level0" onClick={handleClick}>
             Connect
           </Button>
         </Distribute>
