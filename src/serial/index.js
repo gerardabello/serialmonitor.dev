@@ -29,9 +29,9 @@ class Serial {
   }
 }
 
-export const connect = async baudrate => {
+export const connect = async baudRate => {
   const port = await navigator.serial.requestPort({})
-  await port.open({ baudrate })
+  await port.open({ baudRate })
 
   // DEBUG
   navigator.serial.ondisconnect = console.warn
